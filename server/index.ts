@@ -1,4 +1,5 @@
 import express, { type Request, type Response } from "express";
+import path from "path";
 import morgan from "morgan";
 const app = express();
 
@@ -6,7 +7,7 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello World!");
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -16,6 +17,17 @@ app.use(morgan("dev"));
 import uploadRouter from "./src/routes/upload.route";
 
 app.use("/api/v1", uploadRouter);
+
+app.get("/api/v1/download", (req: Request, res: Response) => {
+  const file = req.query.file as string | undefined;
+  if (!file) {
+    res.status(400).json({ error: "Missing file parameter" });
+    return;
+  }
+  const sanitized = path.basename(file);
+  const filepath = path.join(__dirname, "transcoded", sanitized);
+  res.download(filepath);
+});
 
 /*
  * Worker events for logging and error handling

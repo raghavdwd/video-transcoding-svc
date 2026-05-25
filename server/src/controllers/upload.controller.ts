@@ -7,11 +7,21 @@ import { z } from "zod";
 
 type UploadedFile = Express.Multer.File;
 
-type FileResolution = "480p" | "720p" | "1080p";
-
 const fileUploadSchema = z.object({
   filename: z.string(),
-  resolutions: z.array(z.enum(["480p", "720p", "1080p"])),
+  resolutions: z.preprocess(
+    (val) => {
+      if (typeof val === "string") {
+        try {
+          return JSON.parse(val);
+        } catch {
+          return val;
+        }
+      }
+      return val;
+    },
+    z.array(z.enum(["480p", "720p", "1080p"])),
+  ),
 });
 
 export const handleFileUpload = async (
@@ -19,11 +29,10 @@ export const handleFileUpload = async (
   res: Response,
 ): Promise<void> => {
   const uploadedFile = (req as Request & { file?: UploadedFile }).file;
-  const fileResolution: FileResolution[] = req.body.resolutions;
 
-  const { success, error } = fileUploadSchema.safeParse({
+  const { success, error, data } = fileUploadSchema.safeParse({
     filename: uploadedFile?.filename,
-    resolutions: fileResolution,
+    resolutions: req.body.resolutions,
   });
 
   if (!success) {
@@ -34,11 +43,12 @@ export const handleFileUpload = async (
     return;
   }
   try {
+    const resolutions = data!.resolutions;
     const fileInfo = {
       filename: uploadedFile!.filename,
       status: "pending",
       path: uploadedFile!.path,
-      resolutions: fileResolution,
+      resolutions,
     };
 
     const dbResult = await db.insert(uploads).values(fileInfo).returning();
@@ -54,7 +64,7 @@ export const handleFileUpload = async (
       filename: fileInfo.filename,
       filePath: fileInfo.path,
       outputDir: "transcoded",
-      resolutions: fileResolution,
+      resolutions,
     });
 
     res.status(200).json({
