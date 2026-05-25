@@ -1,22 +1,24 @@
 import multer from "multer";
 import path from "path";
 import { type Request, type Response } from "express";
+import getPath from "../utils/get-path";
+
+const PATH_TO_UPLOADS = getPath("uploads");
 
 const storage = multer.diskStorage({
-  destination: function (
-    req: Request,
-    file: Express.Multer.File,
-    cb: (error: Error | null, destination: string) => void,
-  ) {
-    cb(null, "/tmp/my-uploads");
+  destination: (_req, _file, cb) => {
+    cb(null, PATH_TO_UPLOADS);
   },
-  filename: function (
-    req: Request,
-    file: Express.Multer.File,
-    cb: (error: Error | null, filename: string) => void,
-  ) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, file.fieldname + "-" + uniqueSuffix);
+
+  filename: (_req, file, cb) => {
+    const timestamp = Date.now();
+    const randomNumber = Math.round(Math.random() * 1e9);
+
+    const extension = path.extname(file.originalname);
+
+    const uniqueFileName = `${file.fieldname}-${timestamp}-${randomNumber}${extension}`;
+
+    cb(null, uniqueFileName);
   },
 });
 

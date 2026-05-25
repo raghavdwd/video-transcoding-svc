@@ -15,6 +15,13 @@
       "when": 1779716362985,
       "tag": "0001_flashy_terrax",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1779729480533,
+      "tag": "0002_sloppy_marvel_zombies",
+      "breakpoints": true
     }
   ]
 }

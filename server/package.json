@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@types/express": "^5.0.6",
+    "@types/morgan": "^1.9.10",
     "@types/multer": "^2.1.0",
     "bullmq": "^5.77.3",
     "cors": "^2.8.6",
@@ -30,6 +31,7 @@
     "ioredis": "^5.10.1",
     "morgan": "^1.10.1",
     "multer": "^2.1.1",
-    "pg": "^8.21.0"
+    "pg": "^8.21.0",
+    "zod": "^4.4.3"
   }
 }

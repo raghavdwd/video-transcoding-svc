@@ -8,6 +8,7 @@ export const uploads = pgTable("uploads", {
   path: varchar("path", { length: 255 }).notNull(),
   transcodedFiles: json("transcoded_files").default({}),
   thumbnail: varchar("thumbnail", { length: 255 }),
+  resolutions: json("resolutions").default([]),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .default(sql`now()`),

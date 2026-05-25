@@ -11,6 +11,10 @@ coverage
 *.lcov
 .env
 
+transcoded/*
+thumbnails/*
+uploads/*
+
 
 # logs
 logs
