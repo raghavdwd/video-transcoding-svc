@@ -38,7 +38,8 @@ export const worker = new Worker(
       };
 
       const commands = resolutions.map(
-        (res) => `ffmpeg -i "${inputFilePath}" -vf "${scaleMap[res]}" "${outputDir}/${res}_${filename}"`,
+        (res) =>
+          `ffmpeg -i "${inputFilePath}" -vf "${scaleMap[res]}" "${outputDir}/${res}_${filename}"`,
       );
       const thumbnailCommand = `ffmpeg -i "${inputFilePath}" -ss 00:00:01.000 -vframes 1 "${outputDir}/thumbnail_${filename}.jpg"`;
 
@@ -80,6 +81,6 @@ export const worker = new Worker(
   },
   {
     connection: redis,
-    concurrency: 3, // Adjust the concurrency as needed
+    concurrency: 2, // we are allowing 2 concurrent jobs to be processed by this worker
   },
 );

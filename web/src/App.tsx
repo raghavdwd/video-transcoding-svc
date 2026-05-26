@@ -2,6 +2,7 @@ import { useState, useRef, type FormEvent } from "react";
 import UploadView from "./components/UploadView";
 import StatusView from "./components/StatusView";
 import "./index.css";
+import { Moon, Sun } from "lucide-react";
 
 type View = "upload" | "status";
 type Status = "idle" | "uploading" | "success" | "error";
@@ -21,6 +22,7 @@ export function App() {
   const [message, setMessage] = useState("");
   const [searchId, setSearchId] = useState("");
   const [fileStatus, setFileStatus] = useState<FileStatus | null>(null);
+  const [theme, setTheme] = useState<"light" | "dark">("light");
   const inputRef = useRef<HTMLInputElement>(null);
 
   function toggleRes(res: string) {
@@ -60,13 +62,18 @@ export function App() {
     try {
       const res = await fetch(`/api/v1/file-status?id=${searchId}`);
       const data = await res.json();
-      setFileStatus(
-        (data as Record<string, unknown>).files as FileStatus,
-      );
+      setFileStatus((data as Record<string, unknown>).files as FileStatus);
     } catch {
       setFileStatus(null);
     }
   }
+
+  const handleDarkMode = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+    // document.documentElement.classList.toggle("dark");
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans antialiased">
@@ -89,6 +96,13 @@ export function App() {
                 {v}
               </button>
             ))}
+            <button className="cursor-pointer" onClick={handleDarkMode}>
+              {theme === "light" ? (
+                <Moon className="size-5 text-gray-900" />
+              ) : (
+                <Sun className="size-5 text-gray-900" />
+              )}
+            </button>
           </nav>
         </div>
       </header>

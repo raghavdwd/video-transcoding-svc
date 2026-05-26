@@ -29,7 +29,10 @@ const getPath = (type: "uploads" | "transcoded" | "thumbnails"): string => {
   }
 };
 
+/*
 console.log("Uploads Path:", getPath("uploads"));
 console.log("Transcoded Path:", getPath("transcoded"));
 console.log("Thumbnails Path:", getPath("thumbnails"));
+
+*/
 export default getPath;
